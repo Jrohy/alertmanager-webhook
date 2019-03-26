@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import logging
-
+import requests
 from flask import Flask, request
 
 # Enable logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+dingtalk_url="https://oapi.dingtalk.com/robot/send?access_token={}"
 
 # Initial Flask app
 app = Flask(__name__)
@@ -16,10 +18,11 @@ def tg_handler():
     content = request.get_json()
     try:
         logger.info("post json == > {}".format(content))
+        access_token="accessToken"
         from msg_handler import alert_msg_handler
         for alert_json in content['alerts']:
             transform_msg = alert_msg_handler(alert_json)
-            print(transform_msg)
+            requests.post(dingtalk_url.format(access_token), data=transform_msg)
     except:
         logger.error("parse error ==> {}".format(content))
     return 'ok'

@@ -23,6 +23,7 @@ def firing_msg(alert_json):
 
 def resolved_msg(alert_json):
     message = "*[{}] {}*\n".format(alert_json['status'].upper(), alert_json['labels']['alertname'])
+    message = message + " - job: {}\n".format(alert_json['labels']['job'])
     message = message + " - instance: {}\n".format(alert_json['labels']['instance'])
     return message
 
