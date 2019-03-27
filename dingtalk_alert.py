@@ -2,23 +2,14 @@
 # -*- coding: utf-8 -*-
 import logging
 import requests
+import json
 from flask import Flask, request
 
 # Enable logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
 dingtalk_url="https://oapi.dingtalk.com/robot/send?access_token={}"
-
-data_template="""
-{
-    "msgtype": "markdown",
-    "markdown": {
-        "title":"{0}",
-        "text":"{1}"
-     }
-}
-"""
 
 # Initial Flask app
 app = Flask(__name__)
@@ -27,15 +18,15 @@ app = Flask(__name__)
 def tg_handler():
     content = request.get_json()
     try:
-        logger.info("post json == > {}".format(content))
         access_token="accessToken"
         from msg_handler import alert_msg_handler
         for alert_json in content['alerts']:
             transform_msg = alert_msg_handler(alert_json)
-            post_data = data_template.format("test", transform_msg)
-            requests.post(dingtalk_url.format(access_token), data=post_data)
-    except:
-        logger.error("parse error ==> {}".format(content))
+            post_data = {"msgtype": "markdown","markdown": {"title":"test","text":transform_msg}}
+            logger.info("post json == > {}".format(post_data))
+            requests.post(dingtalk_url.format(access_token), json=json.dumps(post_data))
+    except Exception as e:
+        logger.error(e)
     return 'ok'
 
 if __name__ == "__main__":
