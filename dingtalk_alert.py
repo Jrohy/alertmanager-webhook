@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 import logging
 import requests
-import json
 from flask import Flask, request
 
 # Enable logging
@@ -24,7 +23,7 @@ def tg_handler():
             transform_msg = alert_msg_handler(alert_json)
             post_data = {"msgtype": "markdown","markdown": {"title":"test","text":transform_msg}}
             logger.info("post json == > {}".format(post_data))
-            requests.post(dingtalk_url.format(access_token), json=json.dumps(post_data))
+            requests.post(dingtalk_url.format(access_token), json=post_data)
     except Exception as e:
         logger.error(e)
     return 'ok'
