@@ -4,7 +4,7 @@ LABEL maintainer "Jrohy <euvkzx@gmail.com>"
 
 WORKDIR /alertmanager-dingtalk
 
-COPY dingtalk_alert.py msg_handler.py run.sh /alertmanager-dingtalk/
+COPY alert.py msg.py run.sh /alertmanager-dingtalk/
 
 RUN apk add --no-cache python3 bash && \
     python3 -m ensurepip && \

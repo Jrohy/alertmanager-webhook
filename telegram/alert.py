@@ -5,27 +5,28 @@ import logging
 from flask import Flask, request
 
 # Enable logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
 logger = logging.getLogger(__name__)
 
 # Initial Flask app
 app = Flask(__name__)
 
 @app.route('/alert', methods=['POST'])
-def tg_handler():
+def alert():
     content = request.get_json()
+    logger.info(f"alertmanager json == > {content}")
     try:
         import telegram
         # Initial bot by Telegram access token
         bot = telegram.Bot(token="botToken")
         chat_id = "-chatID"
-        logger.info("post json == > {}".format(content))
-        from msg_handler import alert_msg_handler
+        from msg import alert_msg_handler
         for alert_json in content['alerts']:
-            transform_msg = alert_msg_handler(alert_json)
-            bot.sendMessage(chat_id=chat_id, text=transform_msg, parse_mode="Markdown")
+            parse_msg = alert_msg_handler(alert_json)
+            logger.info(f"post json == > {parse_msg}")
+            bot.sendMessage(chat_id=chat_id, text=parse_msg, parse_mode="Markdown")
     except:
-        logger.error("parse error ==> {}".format(content))
+        logger.error(f"parse error ==> {content}")
     return 'ok'
 
 if __name__ == "__main__":
