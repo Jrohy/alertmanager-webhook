@@ -15,7 +15,7 @@
     ```
     receivers:
     - name: 'alert-webhook'
-    webhook_configs:
-        - url: http://xx.xx.xx.xx:9165/alert
-          send_resolved: true
+      webhook_configs:
+      - url: http://xx.xx.xx.xx:9165/alert
+        send_resolved: true
     ```
